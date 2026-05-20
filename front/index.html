@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cadastro de Câmeras</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 40px;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 30px;
+    }
+
+    input {
+      padding: 10px;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 10px;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+
+    .save-btn {
+      background: #007bff;
+      color: white;
+    }
+
+    .edit-btn {
+      background: orange;
+      color: white;
+      margin-right: 5px;
+    }
+
+    .delete-btn {
+      background: red;
+      color: white;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background: #eee;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <h1>Cadastro de Câmeras</h1>
+
+    <form id="cameraForm">
+
+      <input type="number" id="id" placeholder="ID" required />
+
+      <input type="text" id="name" placeholder="Nome da câmera" required />
+
+      <input type="text" id="url" placeholder="RTSP URL" required />
+
+      <button type="submit" class="save-btn">
+        Salvar Câmera
+      </button>
+
+    </form>
+
+    <table>
+
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nome</th>
+          <th>URL</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+
+      <tbody id="cameraTable">
+      </tbody>
+
+    </table>
+
+  </div>
+
+  <script>
+
+    const API_LIST = 'http://localhost:8080/api/v1/cameras';
+    const API_SAVE = 'http://localhost:8080/api/v1/new-camera';
+
+    async function loadCameras() {
+
+      try {
+
+        const response = await fetch(API_LIST);
+
+        const data = await response.json();
+
+        const table = document.getElementById('cameraTable');
+
+        table.innerHTML = '';
+
+        const cameras = data.cameras;
+
+        for (const key in cameras) {
+
+          const cam = cameras[key];
+
+          const row = `
+            <tr>
+              <td>${cam.id}</td>
+              <td>${cam.name}</td>
+              <td>${cam.url}</td>
+
+              <td>
+
+                <button
+                  class="edit-btn"
+                  onclick='editCamera(${JSON.stringify(cam)})'>
+                  Editar
+                </button>
+
+                <button
+                  class="delete-btn"
+                  onclick='deleteCamera(${cam.id})'>
+                  Excluir
+                </button>
+
+              </td>
+            </tr>
+          `;
+
+          table.innerHTML += row;
+        }
+
+      } catch (err) {
+        console.error(err);
+        alert('Erro ao carregar câmeras');
+      }
+    }
+
+    async function saveCamera(event) {
+
+      event.preventDefault();
+
+      const camera = {
+        ID: parseInt(document.getElementById('id').value),
+        Name: document.getElementById('name').value,
+        URL: document.getElementById('url').value
+      };
+
+      try {
+
+        const response = await fetch(API_SAVE, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(camera)
+        });
+
+        if (!response.ok) {
+          throw new Error('Erro ao salvar');
+        }
+
+        clearForm();
+
+        loadCameras();
+
+      } catch (err) {
+        console.error(err);
+        alert('Erro ao salvar câmera');
+      }
+    }
+
+    function editCamera(cam) {
+
+      document.getElementById('id').value = cam.id;
+      document.getElementById('name').value = cam.name;
+      document.getElementById('url').value = cam.url;
+
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+
+    async function deleteCamera(id) {
+
+      const confirmDelete = confirm(
+        `Deseja excluir a câmera ${id}?`
+      );
+
+      if (!confirmDelete) {
+        return;
+      }
+
+      try {
+
+        const response = await fetch(
+          `http://localhost:8080/api/v1/camera/${id}`,
+          {
+            method: 'DELETE'
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error('Erro ao excluir');
+        }
+
+        loadCameras();
+
+      } catch (err) {
+        console.error(err);
+        alert('Erro ao excluir câmera');
+      }
+    }
+
+    function clearForm() {
+
+      document.getElementById('id').value = '';
+      document.getElementById('name').value = '';
+      document.getElementById('url').value = '';
+    }
+
+    document
+      .getElementById('cameraForm')
+      .addEventListener('submit', saveCamera);
+
+    loadCameras();
+
+  </script>
+
+</body>
+</html>

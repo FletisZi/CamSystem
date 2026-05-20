@@ -1,11 +1,19 @@
 package main
 
 import (
-	"camsystem/infra/db"
-	"camsystem/router"
+	"camsystem/internal/stream_manager"
+	"camsystem/internal/capturador"
+	"camsystem/internal/infra/db"
+	"camsystem/internal/router"
 )
 
 func main() {
 	db.InitDB()
+	
+
+	manager := stream_manager.NewStreamManager()
+
+	go capturador.Initialize(manager)
+
 	router.Initialize()
 }

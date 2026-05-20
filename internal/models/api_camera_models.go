@@ -1,45 +1,14 @@
-package handlers
+package models
 
 import (
 	"encoding/json"
 	"fmt"
-	"net/http"
-	"strconv"
 
-	"camsystem/infra/db"
-	"camsystem/schemas"
-
-	"github.com/gin-gonic/gin"
+	"camsystem/internal/infra/db"
+	"camsystem/internal/schemas"
 	bolt "go.etcd.io/bbolt"
+	"strconv"
 )
-
-func CreateCamera(c *gin.Context) {
-
-	// CORRETO: sem ponteiro
-	var cam schemas.CameraRequest
-
-	// bind do JSON
-	if err := c.ShouldBindJSON(&cam); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error":   "JSON inválido",
-			"details": err.Error(),
-		})
-		return
-	}
-
-	// salva no banco
-	if err := SaveCameraToDB(&cam); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error":   "erro ao salvar câmera",
-			"details": err.Error(),
-		})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"message": "câmera salva com sucesso",
-	})
-}
 
 func SaveCameraToDB(cam *schemas.CameraRequest) error {
 
@@ -63,23 +32,6 @@ func SaveCameraToDB(cam *schemas.CameraRequest) error {
 
 		// salva
 		return b.Put(key, data)
-	})
-}
-
-func ListCameras(c *gin.Context) {
-
-	cameras, err := GetAllCamerasFromDB()
-
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error":   "erro ao listar câmeras",
-			"details": err.Error(),
-		})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"cameras": cameras,
 	})
 }
 
@@ -118,4 +70,32 @@ func GetAllCamerasFromDB() (map[int]schemas.CameraRequest, error) {
 	})
 
 	return cameras, err
+}
+
+func DeleteCameraFromDB(id int) error {
+
+	return db.DB.Update(func(tx *bolt.Tx) error {
+
+		b := tx.Bucket([]byte("cameras"))
+
+		// valida bucket
+		if b == nil {
+			return fmt.Errorf("bucket cameras não encontrado")
+		}
+
+		// chave
+		key := []byte(strconv.Itoa(id))
+
+		// verifica se existe antes de deletar
+		if b.Get(key) == nil {
+			return fmt.Errorf("camera com ID %d não encontrada", id)
+		}
+
+		// remove do banco
+		if err := b.Delete(key); err != nil {
+			return fmt.Errorf("erro ao deletar camera: %w", err)
+		}
+
+		return nil
+	})
 }

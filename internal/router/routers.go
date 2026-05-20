@@ -3,7 +3,7 @@ package router
 import (
 	"time"
 
-	"camsystem/handlers"
+	"camsystem/internal/handlers"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
@@ -21,5 +21,6 @@ func InitializeRoutes(router *gin.Engine) {
 	v1 := router.Group("/api/v1")
 
 	v1.POST("/new-camera", handlers.CreateCamera)
+	v1.DELETE("/camera/:id", handlers.DeleteCamera)
 	v1.GET("/cameras", handlers.ListCameras)
 }
