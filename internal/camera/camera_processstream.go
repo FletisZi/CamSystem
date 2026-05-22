@@ -13,7 +13,7 @@ func (c *Camera) ProcessStream(stdout io.ReadCloser) error {
 	for {
 
 		n, err := stdout.Read(buf)
-		fmt.Printf("[Câmera %d] Recebendo %d bytes do stream...\n", c.ID, n)
+		// fmt.Printf("[Câmera %d] Recebendo %d bytes do stream...\n", c.ID, n)
 
 		if err != nil {
 			fmt.Printf("[Câmera %d] Erro na leitura do stream: %v\n", c.ID, err)
