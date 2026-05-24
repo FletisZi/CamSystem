@@ -1,15 +1,14 @@
 package handlers
 
 import (
-
+	"fmt"
 	"net/http"
 	"strconv"
 
-	"camsystem/internal/schemas"
 	"camsystem/internal/models"
+	"camsystem/internal/schemas"
 
 	"github.com/gin-gonic/gin"
-
 )
 
 func CreateCamera(c *gin.Context) {
@@ -25,6 +24,7 @@ func CreateCamera(c *gin.Context) {
 		})
 		return
 	}
+	fmt.Printf("Recebido: %+v\n", cam)
 
 	// salva no banco
 	if err := models.SaveCameraToDB(&cam); err != nil {
@@ -95,4 +95,3 @@ func ListCameras(c *gin.Context) {
 		"cameras": cameras,
 	})
 }
-

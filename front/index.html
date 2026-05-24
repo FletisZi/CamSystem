@@ -6,6 +6,7 @@
   <title>Cadastro de Câmeras</title>
 
   <style>
+
     body {
       font-family: Arial, sans-serif;
       background: #f4f4f4;
@@ -33,6 +34,13 @@
 
     input {
       padding: 10px;
+      font-size: 16px;
+    }
+
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
       font-size: 16px;
     }
 
@@ -75,8 +83,20 @@
     th {
       background: #eee;
     }
+
+    .status-active {
+      color: green;
+      font-weight: bold;
+    }
+
+    .status-inactive {
+      color: red;
+      font-weight: bold;
+    }
+
   </style>
 </head>
+
 <body>
 
   <div class="container">
@@ -85,11 +105,31 @@
 
     <form id="cameraForm">
 
-      <input type="number" id="id" placeholder="ID" required />
+      <input
+        type="number"
+        id="id"
+        placeholder="ID"
+        required
+      />
 
-      <input type="text" id="name" placeholder="Nome da câmera" required />
+      <input
+        type="text"
+        id="name"
+        placeholder="Nome da câmera"
+        required
+      />
 
-      <input type="text" id="url" placeholder="RTSP URL" required />
+      <input
+        type="text"
+        id="url"
+        placeholder="RTSP URL"
+        required
+      />
+
+      <label class="checkbox-container">
+        <input type="checkbox" id="active" />
+        Câmera ativa
+      </label>
 
       <button type="submit" class="save-btn">
         Salvar Câmera
@@ -104,6 +144,7 @@
           <th>ID</th>
           <th>Nome</th>
           <th>URL</th>
+          <th>Status</th>
           <th>Ações</th>
         </tr>
       </thead>
@@ -126,6 +167,10 @@
 
         const response = await fetch(API_LIST);
 
+        if (!response.ok) {
+          throw new Error('Erro ao carregar');
+        }
+
         const data = await response.json();
 
         const table = document.getElementById('cameraTable');
@@ -138,11 +183,26 @@
 
           const cam = cameras[key];
 
+          const statusText = cam.active
+            ? '🟢 Ativa'
+            : '🔴 Inativa';
+
+          const statusClass = cam.active
+            ? 'status-active'
+            : 'status-inactive';
+
           const row = `
             <tr>
+
               <td>${cam.id}</td>
+
               <td>${cam.name}</td>
+
               <td>${cam.url}</td>
+
+              <td class="${statusClass}">
+                ${statusText}
+              </td>
 
               <td>
 
@@ -159,6 +219,7 @@
                 </button>
 
               </td>
+
             </tr>
           `;
 
@@ -166,7 +227,9 @@
         }
 
       } catch (err) {
+
         console.error(err);
+
         alert('Erro ao carregar câmeras');
       }
     }
@@ -176,18 +239,28 @@
       event.preventDefault();
 
       const camera = {
-        ID: parseInt(document.getElementById('id').value),
+
+        ID: parseInt(
+          document.getElementById('id').value
+        ),
+
         Name: document.getElementById('name').value,
-        URL: document.getElementById('url').value
+
+        URL: document.getElementById('url').value,
+
+        Active: document.getElementById('active').checked
       };
 
       try {
 
         const response = await fetch(API_SAVE, {
+
           method: 'POST',
+
           headers: {
             'Content-Type': 'application/json'
           },
+
           body: JSON.stringify(camera)
         });
 
@@ -200,7 +273,9 @@
         loadCameras();
 
       } catch (err) {
+
         console.error(err);
+
         alert('Erro ao salvar câmera');
       }
     }
@@ -208,8 +283,12 @@
     function editCamera(cam) {
 
       document.getElementById('id').value = cam.id;
+
       document.getElementById('name').value = cam.name;
+
       document.getElementById('url').value = cam.url;
+
+      document.getElementById('active').checked = cam.active;
 
       window.scrollTo({
         top: 0,
@@ -243,7 +322,9 @@
         loadCameras();
 
       } catch (err) {
+
         console.error(err);
+
         alert('Erro ao excluir câmera');
       }
     }
@@ -251,8 +332,12 @@
     function clearForm() {
 
       document.getElementById('id').value = '';
+
       document.getElementById('name').value = '';
+
       document.getElementById('url').value = '';
+
+      document.getElementById('active').checked = false;
     }
 
     document

@@ -1,8 +1,8 @@
 package capturador
 
 import (
-	"camsystem/internal/stream_manager"
 	"camsystem/internal/models"
+	"camsystem/internal/stream_manager"
 )
 
 func Initialize(manager *stream_manager.StreamManager) {
@@ -13,7 +13,9 @@ func Initialize(manager *stream_manager.StreamManager) {
 	}
 
 	for _, cam := range data {
-		manager.AddCamera(cam.ID, cam.URL)
+		if cam.Active != nil && *cam.Active {
+			manager.AddCamera(cam.ID, cam.URL)
+		}
 	}
 
 	// O programa principal fica rodando...
