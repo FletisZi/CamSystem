@@ -6,8 +6,9 @@ import (
 
 	"camsystem/internal/infra/db"
 	"camsystem/internal/schemas"
-	bolt "go.etcd.io/bbolt"
 	"strconv"
+
+	bolt "go.etcd.io/bbolt"
 )
 
 func SaveCameraToDB(cam *schemas.CameraRequest) error {

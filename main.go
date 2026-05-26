@@ -8,6 +8,12 @@ import (
 )
 
 func main() {
+
+	db.LoadEnv()
+
+	// Inicializa banco de dados
+	db.InitDatabase()
+
 	db.InitDB()
 
 	manager := stream_manager.NewStreamManager()

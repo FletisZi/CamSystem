@@ -1,0 +1,23 @@
+docker compose up -d
+
+Para verificar:
+
+docker ps
+
+Para entrar no banco:
+
+docker exec -it goteste psql -U postgres -d sistema
+
+
+
+Se quiser recriar do zero:
+
+docker compose down
+
+e apagar a pasta:
+
+rm -rf data
+
+Depois subir novamente:
+
+docker compose up -d

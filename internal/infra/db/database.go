@@ -3,9 +3,9 @@ package db
 import (
 	"log"
 	"os"
-	bolt "go.etcd.io/bbolt"
-	"github.com/joho/godotenv"
 
+	"github.com/joho/godotenv"
+	bolt "go.etcd.io/bbolt"
 )
 
 var DB *bolt.DB
@@ -34,7 +34,6 @@ func InitDB() {
 		log.Fatal(err)
 	}
 
-
 	// cria bucket se não existir
 	err = DB.Update(func(tx *bolt.Tx) error {
 		_, err := tx.CreateBucketIfNotExists([]byte("cameras"))
@@ -44,5 +43,5 @@ func InitDB() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	
+
 }

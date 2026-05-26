@@ -1,0 +1,17 @@
+services:
+  database:
+    image: postgres:16
+    container_name: db_camsystem
+    restart: always
+
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: sistema
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - ./data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
