@@ -3,14 +3,15 @@ package router
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/gin-contrib/pprof"
+	"camsystem/internal/stream_manager"
 )
 
-func Initialize() {
+func Initialize( streamManager *stream_manager.StreamManager) {
 	router := gin.Default()
 
 	pprof.Register(router)
 
-	InitializeRoutes(router)
+	InitializeRoutes(router,streamManager)
 
-	router.Run(":8080")
+	router.Run("localhost:8080")
 }

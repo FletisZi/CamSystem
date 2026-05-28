@@ -3,13 +3,16 @@ package router
 import (
 	"time"
 
-	"camsystem/internal/handlers"
+	// "camsystem/internal/handlers"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"camsystem/internal/handlers"
+	"camsystem/internal/stream_manager"
+
 )
 
-func InitializeRoutes(router *gin.Engine) {
+func InitializeRoutes(router *gin.Engine, streamManager *stream_manager.StreamManager) {
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"}, // depois pode restringir
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
@@ -21,8 +24,6 @@ func InitializeRoutes(router *gin.Engine) {
 
 	v1 := router.Group("/api/v1")
 
-	v1.POST("/new-camera", handlers.CreateCamera)
-	v1.POST("/create-camera", handlers.CreateCameras)
-	v1.DELETE("/camera/:id", handlers.DeleteCamera)
-	v1.GET("/cameras", handlers.ListCameras)
+	v1.POST("/cameras/:id/start", handlers.StartCamera(streamManager))
+
 }

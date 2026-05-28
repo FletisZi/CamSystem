@@ -6,7 +6,7 @@ docker ps
 
 Para entrar no banco:
 
-docker exec -it goteste psql -U postgres -d sistema
+docker exec -it goteste psql -U admin_user -d sistema
 
 
 

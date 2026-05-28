@@ -5,11 +5,11 @@ import (
 	"camsystem/internal/camera"
 )
 
-func (m *StreamManager) AddCamera(id int, url string) {
+func (m *StreamManager) AddCamera(id int, name string, url string) {
 	m.Mu.Lock()
 	defer m.Mu.Unlock()
 
-	newCam := camera.NewCamera(id, url)
+	newCam := camera.NewCamera(id,name, url)
 	m.Cameras[id] = newCam
 
 	go newCam.StartCapture()

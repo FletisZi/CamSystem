@@ -14,7 +14,7 @@ func Initialize(manager *stream_manager.StreamManager) {
 		if cam.IsActive != false {
 			url := tools.MontarURL(cam)
 			fmt.Printf("Adicionando câmera ID %d com URL: %s\n", cam.ID, url)
-			manager.AddCamera(int(cam.ID), url)
+			manager.AddCamera(int(cam.ID), cam.Name, url)
 		}
 
 	}

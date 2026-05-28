@@ -10,6 +10,7 @@ import (
 
 type Camera struct {
 	ID              int
+	Name			string
 	URL             string
 	Cmd             *exec.Cmd
 	Buffer          *tools.RingBuffer
@@ -22,9 +23,10 @@ type Camera struct {
 	Mu              sync.RWMutex
 }
 
-func NewCamera(id int, url string) *Camera {
+func NewCamera(id int, name string, url string) *Camera {
 	return &Camera{
 		ID:              id,
+		Name:            name,
 		URL:             url,
 		Buffer:          tools.NewRingBuffer(12, 20),
 		Recording:       false,

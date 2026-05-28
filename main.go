@@ -14,13 +14,11 @@ func main() {
 	// Inicializa banco de dados
 	db.InitDatabase()
 
-	db.InitDB()
-
 	manager := stream_manager.NewStreamManager()
 
 	go capturador.Initialize(manager)
 
 	// monitor.StartMonitor()
 
-	router.Initialize()
+	router.Initialize(manager)
 }

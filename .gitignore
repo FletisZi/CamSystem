@@ -1,3 +1,5 @@
 go.mod
 go.sum
 internal/config/.env
+data/
+infra/data/
