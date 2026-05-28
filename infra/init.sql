@@ -38,3 +38,38 @@ CREATE TABLE cameras (
     updated_at TIMESTAMP DEFAULT NOW(),
     deleted_at TIMESTAMP
 );
+
+
+CREATE TABLE video_recordings (
+
+     id BIGSERIAL PRIMARY KEY,
+
+    -- identificador global
+    uuid UUID NOT NULL UNIQUE DEFAULT gen_random_uuid(),
+
+    camera_id BIGINT REFERENCES cameras(id),
+
+    file_path TEXT NOT NULL,
+    file_name TEXT NOT NULL,
+
+    -- started_at TIMESTAMP NOT NULL,
+    -- ended_at TIMESTAMP NOT NULL,
+
+    -- duration_seconds INTEGER,
+
+    -- file_size BIGINT,
+
+    checksum_sha256 TEXT,
+
+    event_type VARCHAR(50),
+
+    ticket_id UUID,
+
+    placa_detectada VARCHAR(20),
+
+    -- trigger_source VARCHAR(50),
+
+    -- status VARCHAR(20),
+
+    created_at TIMESTAMP DEFAULT NOW()
+);
