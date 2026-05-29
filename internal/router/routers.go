@@ -5,11 +5,11 @@ import (
 
 	// "camsystem/internal/handlers"
 
-	"github.com/gin-contrib/cors"
-	"github.com/gin-gonic/gin"
 	"camsystem/internal/handlers"
 	"camsystem/internal/stream_manager"
 
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 )
 
 func InitializeRoutes(router *gin.Engine, streamManager *stream_manager.StreamManager) {
@@ -25,5 +25,6 @@ func InitializeRoutes(router *gin.Engine, streamManager *stream_manager.StreamMa
 	v1 := router.Group("/api/v1")
 
 	v1.POST("/cameras/:id/start", handlers.StartCamera(streamManager))
+	v1.POST("/cameras/:id/stop", handlers.StopCamera(streamManager))
 
 }

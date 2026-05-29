@@ -27,9 +27,9 @@ func (c *Camera) StartCapture() {
 
 			fmt.Printf("[Câmera %d] stream encerrado: %v\n", c.ID, err)
 
-			c.Mu.Lock()
-			c.IsRecording = false
-			c.Mu.Unlock()
+			// c.Mu.Lock()
+			// c.IsRecording = false
+			// c.Mu.Unlock()
 
 			cmd.Wait()
 
