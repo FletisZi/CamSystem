@@ -1,0 +1,14 @@
+{
+    "server": {
+        "port": 8080,
+        "host": "localhost"
+    },
+    "database": {
+        "type": "sqlite",
+        "file": "cam_system.db"
+    },
+    "logging": {
+        "level": "info",
+        "file": "logs/cam_system.log"
+    }
+}
