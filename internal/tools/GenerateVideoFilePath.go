@@ -22,7 +22,11 @@ func GenerateVideoFilePath(plate string) (string, error) {
 	timestamp := now.Format("2006-01-02_15-04-05")
 
 	datePath := filepath.Join(basePath, dateFolder)
-	platePath := filepath.Join(datePath, plate)
+	codePath, err := GerarCodigoUnico(datePath)
+	if err != nil {
+		return "Erro ao gerar código único", err
+	}
+	platePath := filepath.Join(datePath, codePath)
 
 	if err := os.MkdirAll(platePath, os.ModePerm); err != nil {
 		return "", err
