@@ -35,11 +35,19 @@ func (m *StreamManager) Stop(id int) error {
 
 	fmt.Println("[Manager] Parando Captura da Câmera:", camera.Name)
 
-	err := camera.SaveRecording("ABC123") // Substitua "ABC123" pelo ID do evento ou outro identificador relevante
+	filename, err := camera.SaveRecording()
 
 	if err != nil {
-		fmt.Printf("[Handler] Erro ao salvar gravação da câmera %d: %v\n", camera.ID, err)
+		fmt.Printf("[Manager] Erro ao salvar gravação da câmera %d: %v\n", camera.ID, err)
+		return err
 	}
+	// salvar metadados do evento no banco de dados aqui, associando o caminho do vídeo e a placa
+	fmt.Printf("[Manager] Gravação da câmera %d salva com sucesso em: %s\n", camera.ID, filename)
+
+
+	// if err != nil {
+	// 	fmt.Printf("[Handler] Erro ao salvar gravação da câmera %d: %v\n", camera.ID, err)
+	// }
 
 	// salvar metadados do evento no banco de dados aqui, associando o caminho do vídeo e a placa
 

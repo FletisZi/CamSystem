@@ -6,11 +6,9 @@ import (
 	"os/exec"
 )
 
-func (c *Camera) SaveRecording(placa string) error {
+func (c *Camera) SaveRecording() (string, error) {
 	c.Mu.RLock()
 	defer c.Mu.RUnlock()
-
-	fmt.Println("Placa é", placa)
 
 	// type Payload struct {
 	// 	Placa string `json:"placa"`
@@ -30,10 +28,10 @@ func (c *Camera) SaveRecording(placa string) error {
 	// 	return err
 	// }
 
-	filename, err := tools.GenerateVideoFilePath(placa)
+	filename, err := tools.GenerateVideoFilePath("ABC123") 
 	if err != nil {
 		fmt.Println("Erro ao gerar caminho do vídeo:", err)
-		return err
+		return "", err
 	}
 
 	fmt.Println("Salvando em:", filename)
@@ -48,11 +46,11 @@ func (c *Camera) SaveRecording(placa string) error {
 
 	stdin, err := cmd.StdinPipe()
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	if err := cmd.Start(); err != nil {
-		return err
+		return "", err
 	}
 
 	go func() {
@@ -62,5 +60,5 @@ func (c *Camera) SaveRecording(placa string) error {
 		}
 	}()
 
-	return cmd.Wait()
+	return filename, cmd.Wait()
 }

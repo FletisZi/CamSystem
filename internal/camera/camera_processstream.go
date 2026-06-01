@@ -37,7 +37,7 @@ func (c *Camera) ProcessStream(stdout io.ReadCloser) error {
 			}
 			c.RecordingBuffer = append(c.RecordingBuffer, frame)
 			c.Mu.Unlock()
-			fmt.Printf("[Câmera %d] Gravando frame de %d bytes...\n", c.ID, n)
+			// fmt.Printf("[Câmera %d] Gravando frame de %d bytes...\n", c.ID, n)
 		} else {
 			// fmt.Printf("[Câmera %d] Não está gravando %d bytes...\n", c.ID, n)
 		}
