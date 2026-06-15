@@ -4,6 +4,7 @@ import (
 	"camsystem/internal/tools"
 	"fmt"
 	"os/exec"
+	
 )
 
 func (c *Camera) SaveRecording() (string, error) {
@@ -44,6 +45,28 @@ func (c *Camera) SaveRecording() (string, error) {
 		filename,
 	)
 
+	cmdFrame := exec.Command("ffmpeg",
+		"-f", "mpegts",
+		"-i", "pipe:0",
+		"-vf", "fps=1/2", // Extrai 1 frame por segundo
+		"-q:v", "2",    // Define a qualidade dos frames (1 é a melhor qualidade, 31 é a pior)
+		"-f", "image2pipe",
+		"-vcodec", "mjpeg",
+		// "-pix_fmt", "yuv420p",não sei o que é isso 
+		"pipe:1",
+		`c:\\Users\\rssantos\\Videos\\camsystem\\frames\\frame_%d.jpeg`, // Salva os frames como JPEGs numerados
+		// "C:\\Users\\rssantos\\Videos\\camsystem\\frames\\frame_111.jpg",
+	)
+
+	stdinFrame, err := cmdFrame.StdinPipe()
+	if err != nil {
+		return "", err
+	}
+
+	if err := cmdFrame.Start(); err != nil {
+		return "", err
+	}
+
 	stdin, err := cmd.StdinPipe()
 	if err != nil {
 		return "", err
@@ -55,8 +78,17 @@ func (c *Camera) SaveRecording() (string, error) {
 
 	go func() {
 		defer stdin.Close()
+
 		for _, frame := range c.RecordingBuffer {
 			stdin.Write(frame)
+		}
+	}()
+
+	go func() {
+		defer stdinFrame.Close()
+
+		for _, frame := range c.RecordingBuffer {
+			stdinFrame.Write(frame)
 		}
 	}()
 
